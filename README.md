@@ -1,4 +1,7 @@
 # Untangled HTML: Angle Brackets Hide or Show for VS Code
+
+[![Install Untangled HTML](https://img.shields.io/badge/VS%20Code-Install%20Untangled%20HTML-007ACC?logo=visualstudiocode&logoColor=white)](https://marketplace.visualstudio.com/items?itemName=RahulDhole.untangled-html)
+
 ### Before:
 ```html
 <DIV>
