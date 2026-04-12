@@ -1,7 +1,7 @@
 {
 	"name": "untangled-html",
 	"displayName": "Untangled HTML",
-	"description": "Hide angular brackets in HTML tags. example: </div>Hello</div> becomes div Hello /div",
+	"description": "Declutter your HTML, Vue, and JSX. Toggle the visibility of angle brackets for a cleaner, Zen-like coding experience.",
 	"version": "0.0.2",
 	"publisher": "RahulDhole",
 	"private": true,
@@ -15,7 +15,9 @@
 		"vscode": "^1.74.0"
 	},
 	"categories": [
-		"Programming Languages"
+		"Programming Languages",
+		"Formatters",
+		"Other"
 	],
 	"compilerOptions": {
 		"module": "ESNext",
@@ -30,7 +32,7 @@
 		"commands": [
 			{
 				"command": "extension.toggleBrackets",
-				"title": "Untangled HTML Togle: Show or Hide Angle Brackets"
+				"title": "Untangled HTML: Toggle Angle Brackets Visibility"
 			}
 		]
 	}

@@ -1,91 +1,106 @@
-# Untangled HTML: Angle Brackets Hide or Show for VS Code
+# Untangled HTML: Declutter Your Code, One Tag at a Time
 
-[![Install Untangled HTML](https://img.shields.io/badge/VS%20Code-Install%20Untangled%20HTML-007ACC?logo=visualstudiocode&logoColor=white)](https://marketplace.visualstudio.com/items?itemName=RahulDhole.untangled-html)
+<div align="center">
+  <img src="assets/hero-banner.png" alt="Untangled HTML Hero Banner" width="100%">
+</div>
 
-### Before:
+<p align="center">
+  <b>Breathe life back into your code. Focus on logic, not brackets.</b>
+</p>
+
+<p align="center">
+  <a href="https://marketplace.visualstudio.com/items?itemName=RahulDhole.untangled-html">
+    <img src="https://img.shields.io/badge/VS%20Code-Install%20Now-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white" alt="Install Untangled HTML">
+  </a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/visual-studio-marketplace/v/RahulDhole.untangled-html?style=flat-square&label=Version" alt="Version">
+  <img src="https://img.shields.io/visual-studio-marketplace/i/RahulDhole.untangled-html?style=flat-square&label=Installs" alt="Installs">
+  <img src="https://img.shields.io/github/license/rahuldhole/untangled-html?style=flat-square&label=License" alt="License">
+</p>
+
+---
+
+## 🚀 The Problem: Visual Noise
+HTML can be verbose. Between `<div>`, `<span>`, and nested components in Vue/JSX, the **angle brackets (`< >`)** often create "visual noise" that makes it harder to scan the actual content and structure of your app.
+
+## ✨ The Solution: Untangled HTML
+**Untangled HTML** is a high-performance VS Code extension that gives you a "Zen Mode" for your markup. With one command, you can hide all angle brackets, leaving a clean, readable structure that feels more like Python or Stylus, while keeping your code perfectly valid.
+
+| Feature | Standard View | Untangled View |
+| :--- | :--- | :--- |
+| **Clutter** | Heavy angle brackets `< > /` | Clean, focused text |
+| **Readability** | Distracting syntax | Component-first focus |
+| **Workflow** | Standard editing | Rapid scanning & review |
+
+---
+
+## 🛠 Features
+
+- **⚡ Instant Toggle**: Switch between views instantly with a command or keybinding.
+- **🎨 Theme Aware**: Automatically adjusts its color to match your VS Code theme, making hidden brackets invisible but accessible.
+- **📦 Multi-Language Support**: Works seamlessly with `.html`, `.vue`, `.jsx`, and `.tsx`.
+- **📊 Status Bar Integration**: See the current state (Hidden/Visible) at a glance in your bottom bar.
+- **🧠 Zero Configuration**: Works out of the box. No complex settings required.
+
+---
+
+## 📸 See it in Action
+
+### Before (Standard HTML)
 ```html
-<DIV>
-  <H1>
-      Untangled html - VSCode Extension
-  </H1>
-  <SPAN>
-      This is with default HTML Syntax.
-  </SPAN>
-</DIV>
+<section class="hero">
+  <div class="container">
+    <h1>Welcome to Untangled</h1>
+    <p>Visual noise is gone.</p>
+  </div>
+</section>
 ```
 
-### After:
+### After (Untangled Mode)
 ```ruby
-DIV
-  H1
-      Untangled html - VSCode Extension
-  H1
-  SPAN
-      This is after hiding the angle brackets.
-      The code remains the same, it just hides the angles.
-  SPAN
-DIV
+section class="hero"
+  div class="container"
+    h1 Welcome to Untangled h1
+    p Visual noise is gone. p
+  div
+section
 ```
+> **Note**: The extension only affects *visibility* in the editor. Your files remain 100% valid HTML/Vue/JSX on disk.
 
 ---
 
-## Usage
-
-Once installed, use the following command to toggle the visibility of HTML angle brackets in your code:
-
-1. Open the **Command Palette** with `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac).
-2. Search for **Toggle HTML Angle Brackets**.
-3. Click on it to toggle the visibility.
-
-Alternatively, you can assign a custom keybinding to the toggle command for faster access.
-
----
-
-## Overview
-
-**HTML Angle Bracket Toggle** is a simple yet powerful VS Code extension designed to give developers full control over the visibility of HTML angle brackets (`< >`). Whether you're working with plain HTML, Vue, or JSX, this extension helps you declutter your code editor by toggling the visibility of HTML tags, making it easier to focus on the structure and logic of your code.
-
-### Key Features:
-
-- **Toggle HTML angle brackets visibility**: Hide or show HTML, Vue, and JSX tag brackets with a single command.
-- **Works across all file types**: Supports `.html`, `.vue`, and `.jsx` files, ensuring your entire workflow is streamlined.
-- **Customizable**: Automatically adapts to your editor's background color, ensuring a seamless and consistent experience.
-- **Quick status updates**: Get instant feedback on the visibility status of your HTML brackets via the VS Code status bar.
-
----
-
-## Installation
+## 📦 Installation
 
 1. Open **VS Code**.
-2. Go to the **Extensions** view by clicking the Extensions icon in the Activity Bar on the side of the window or using the shortcut `Ctrl+Shift+P` (Windows/Linux) or `Cmd+Shift+P` (Mac).
-3. Search for **HTML Angle Bracket Toggle**.
+2. Press `Ctrl+Shift+X` to open the **Extensions** view.
+3. Search for **Untangled HTML**.
 4. Click **Install**.
 
----
+## 🎮 How to Use
 
-
-## How It Works
-
-When enabled, this extension hides the HTML tags (`< >`) in your code editor, leaving behind a cleaner and more readable code layout. It's perfect for focusing on code structure or reading through code without distraction.
-
-When disabled, it restores the HTML tags, making it easier to visually distinguish HTML elements.
+1. Open any HTML, Vue, or JSX file.
+2. Open the **Command Palette** (`Ctrl+Shift+P` / `Cmd+Shift+P`).
+3. Type **Toggle HTML Angle Brackets** and hit enter.
+4. **Tip**: Assign a shortcut (like `Ctrl+Alt+H`) for even faster toggling!
 
 ---
 
-## Why Use It?
+## 🤝 Contributing & Feedback
 
-- **Declutter Your Workspace**: Hiding the angle brackets can reduce visual noise and help you focus on the most important parts of your code.
-- **Perfect for Reviewers**: If you're reviewing a large codebase, toggling the tags can help you understand the flow without getting distracted by HTML syntax.
-- **Customizable**: Automatically adjusts to your theme and background colors, making it feel like a native feature of your editor.
+We love community involvement! 
 
----
-
-## Contributions
-
-We welcome contributions! Feel free to open an issue or submit a pull request if you'd like to contribute to this extension. Whether it’s adding new features or fixing bugs, we’d love to have your help.
+- 🌟 **Like it?** [Leave a review](https://marketplace.visualstudio.com/items?itemName=RahulDhole.untangled-html&ssr=false#review) on the Marketplace.
+- 🐛 **Found a bug?** [Open an Issue](https://github.com/rahuldhole/untangled-html/issues).
+- 💡 **Have an idea?** Pull requests are welcome!
 
 ---
 
-## License
+## 📜 License
 
-This extension is open source and available under the [MIT License](LICENSE).
+Distributed under the MIT License. See `LICENSE` for more information.
+
+<p align="center">
+  Made with ❤️ by <a href="https://github.com/rahuldhole">Rahul Dhole</a>
+</p>
