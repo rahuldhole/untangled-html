@@ -1,4 +1,4 @@
-# Untangled HTML: Declutter Your Code, One Tag at a Time
+# Untangled HTML: Declutter Your Code
 
 <div align="center">
   <img src="assets/hero-banner.png" alt="Untangled HTML Hero Banner" width="100%">
