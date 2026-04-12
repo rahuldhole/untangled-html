@@ -15,9 +15,9 @@
 </p>
 
 <p align="center">
-  <img src="https://img.shields.io/visual-studio-marketplace/v/RahulDhole.untangled-html?style=flat-square&label=Version" alt="Version">
-  <img src="https://img.shields.io/visual-studio-marketplace/i/RahulDhole.untangled-html?style=flat-square&label=Installs" alt="Installs">
-  <img src="https://img.shields.io/github/license/rahuldhole/untangled-html?style=flat-square&label=License" alt="License">
+  <img src="https://img.shields.io/visual-studio-marketplace/v/RahulDhole.untangled-html?label=Version&color=blue" alt="Version">
+  <img src="https://img.shields.io/visual-studio-marketplace/i/RahulDhole.untangled-html?label=Installs&color=brightgreen" alt="Installs">
+  <img src="https://img.shields.io/github/stars/rahuldhole/untangled-html?style=social" alt="Stars">
 </p>
 
 ---
