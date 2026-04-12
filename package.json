@@ -4,7 +4,13 @@
 	"description": "Declutter your HTML, Vue, and JSX. Toggle the visibility of angle brackets for a cleaner, Zen-like coding experience.",
 	"version": "0.0.2",
 	"publisher": "RahulDhole",
-	"private": true,
+	"private": false,
+	"scripts": {
+		"dev": "pnpm install && echo 'Development environment ready. Press F5 in VS Code to start debugging.'",
+		"lint": "eslint .",
+		"package": "vsce package",
+		"publish": "vsce publish"
+	},
 	"license": "MIT",
 	"repository": {
 		"type": "git",
