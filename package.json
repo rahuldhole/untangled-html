@@ -2,7 +2,7 @@
 	"name": "untangled-html",
 	"displayName": "Untangled HTML",
 	"description": "Declutter your HTML, Vue, and JSX. Toggle the visibility of angle brackets for a cleaner, Zen-like coding experience.",
-	"version": "0.0.2",
+	"version": "0.0.3",
 	"publisher": "RahulDhole",
 	"private": false,
 	"scripts": {
