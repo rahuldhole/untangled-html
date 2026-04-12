@@ -44,6 +44,18 @@ The extension manipulates the **VS Code Token Color Customizations** to hide or 
 - `package.json`: Contains extension metadata, commands, and scripts.
 - `src/extension.js`: The main entry point and toggle logic.
 - `assets/`: Contains marketing materials and icons.
+- `samples/`: A collection of HTML, Vue, and JSX files to test the extension locally.
+
+---
+
+## 🧪 Testing with Samples
+
+To verify the extension is working correctly:
+1.  Open the `samples/` folder in the **Extension Development Host**.
+2.  Open `basic.html`, `component.vue`, or `app.jsx`.
+3.  Run the **Toggle HTML Angle Brackets** command.
+4.  Verify that all angle brackets (`<`, `>`, `/`) are appropriately hidden or shown.
+
 
 ---
 
