@@ -14,32 +14,27 @@ function activate(context) {
         try {
             // Get current theme colors
             const config = vscode.workspace.getConfiguration();
-            const colorCustomizations = config.get('editor.tokenColorCustomizations') || {};
-            const theme = vscode.window.activeColorTheme;
             const editorConfig = vscode.workspace.getConfiguration('editor');
             const editorBackground = editorConfig.get('background') || '#00000000';
 
-            // Initialize textMateRules if doesn't exist
-            if (!colorCustomizations['textMateRules']) {
-                colorCustomizations['textMateRules'] = [];
+            // Update configuration at global (User) level instead of workspace
+            // This prevents adding .vscode/settings.json to the repository and git diffs
+            const inspection = config.inspect('editor.tokenColorCustomizations');
+            const globalColorCustomizations = inspection.globalValue || {};
+            
+            // Initialize textMateRules in global config if doesn't exist
+            if (!globalColorCustomizations['textMateRules']) {
+                globalColorCustomizations['textMateRules'] = [];
             }
 
-            if (bracketsColored) {
-                // Remove our custom rules
-                colorCustomizations['textMateRules'] = colorCustomizations['textMateRules'].filter(rule =>
-                    !bracketScopes.includes(rule.scope)
-                );
-                bracketsColored = false;
-                vscode.window.setStatusBarMessage('HTML angle brackets: visible', 2000);
-            } else {
-                // Clear existing rules first
-                colorCustomizations['textMateRules'] = colorCustomizations['textMateRules'].filter(rule =>
-                    !bracketScopes.includes(rule.scope)
-                );
+            // Apply our changes to the global textMateRules
+            globalColorCustomizations['textMateRules'] = globalColorCustomizations['textMateRules'].filter(rule =>
+                !bracketScopes.includes(rule.scope)
+            );
 
-                // Add new rules with editor background color
+            if (!bracketsColored) {
                 bracketScopes.forEach(scope => {
-                    colorCustomizations['textMateRules'].push({
+                    globalColorCustomizations['textMateRules'].push({
                         scope: scope,
                         settings: {
                             foreground: editorBackground
@@ -47,14 +42,16 @@ function activate(context) {
                     });
                 });
                 bracketsColored = true;
-                vscode.window.setStatusBarMessage('HTML angle brackets: hidden', 2000);
+                vscode.window.setStatusBarMessage('HTML angle brackets: hidden (Global)', 2000);
+            } else {
+                bracketsColored = false;
+                vscode.window.setStatusBarMessage('HTML angle brackets: visible (Global)', 2000);
             }
 
-            // Update configuration at workspace level instead of global
             await config.update(
                 'editor.tokenColorCustomizations',
-                colorCustomizations,
-                vscode.ConfigurationTarget.Workspace
+                globalColorCustomizations,
+                vscode.ConfigurationTarget.Global
             );
         } catch (error) {
             console.error('Error toggling brackets:', error);
