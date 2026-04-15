@@ -10,7 +10,7 @@
 		"lint": "eslint .",
 		"package": "pnpx vsce package",
 		"publish": "pnpx vsce publish",
-		"publish:open-vsx": "pnpx ovsx publish"
+		"publish:ovsx": "pnpx ovsx publish"
 	},
 	"license": "MIT",
 	"repository": {
