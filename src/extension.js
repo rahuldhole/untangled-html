@@ -152,8 +152,33 @@ function activate(context) {
         return ranges;
     }
 
-    /** Returns true if the editor's language lacks grammar support */
+    const FALLBACK_EXTENSIONS = new Set([
+        '.erb', '.blade'
+    ]);
+
+    /** Returns true if the editor's language or file extension needs the decoration fallback */
     function needsDecorationFallback(editor) {
+        if (!editor || !editor.document) return false;
+        
+        const fileName = editor.document.fileName;
+        if (fileName) {
+            const dotIdx = fileName.lastIndexOf('.');
+            if (dotIdx !== -1) {
+                const ext = fileName.substring(dotIdx).toLowerCase();
+                if (FALLBACK_EXTENSIONS.has(ext)) {
+                    return true;
+                }
+                // Handle double extensions like .html.erb
+                const secondDotIdx = fileName.lastIndexOf('.', dotIdx - 1);
+                if (secondDotIdx !== -1) {
+                    const doubleExt = fileName.substring(secondDotIdx).toLowerCase();
+                    if (doubleExt === '.html.erb') {
+                        return true;
+                    }
+                }
+            }
+        }
+        
         return !GRAMMAR_LANGUAGES.has(editor.document.languageId);
     }
 
@@ -221,6 +246,7 @@ function activate(context) {
 
                 // 2. Create decoration type and apply for unsupported languages
                 decorationType = vscode.window.createTextEditorDecorationType({
+                    color: 'transparent',
                     opacity: '0'
                 });
                 isHidden = true;
