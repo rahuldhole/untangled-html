@@ -1,0 +1,76 @@
+---
+import { ViewTransitions } from 'astro:transitions';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import '@fontsource-variable/inter';
+import '../styles/global.css';
+
+interface Props {
+	title: string;
+	description?: string;
+	image?: string;
+}
+
+const { 
+	title, 
+	description = "A modern web experience built with Astro",
+	image = "/og-image.png" 
+} = Astro.props;
+
+const canonicalURL = new URL(Astro.url.pathname, Astro.site);
+---
+
+<!doctype html>
+<html lang="en" class="scroll-smooth">
+	<head>
+		<!-- Global Metadata -->
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="generator" content={Astro.generator} />
+
+		<!-- Canonical URL -->
+		<link rel="canonical" href={canonicalURL} />
+
+		<!-- Primary Meta Tags -->
+		<title>{title}</title>
+		<meta name="title" content={title} />
+		<meta name="description" content={description} />
+
+		<!-- Open Graph / Facebook -->
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content={Astro.url} />
+		<meta property="og:title" content={title} />
+		<meta property="og:description" content={description} />
+		<meta property="og:image" content={new URL(image, Astro.url)} />
+
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:url" content={Astro.url} />
+		<meta property="twitter:title" content={title} />
+		<meta property="twitter:description" content={description} />
+		<meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+		<ViewTransitions />
+	</head>
+	<body class="min-h-screen bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-50 flex flex-col">
+		<Header />
+		
+		<main class="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+			<slot />
+		</main>
+
+		<Footer />
+		
+		<style is:global>
+			:root {
+				--accent: 136, 58, 234;
+				--accent-light: 224, 204, 250;
+				--accent-dark: 49, 10, 101;
+			}
+			html {
+				font-family: 'Inter Variable', system-ui, sans-serif;
+			}
+		</style>
+	</body>
+</html>

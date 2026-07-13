@@ -1,0 +1,43 @@
+---
+title: Understanding React Server Components
+date: 2024-03-14
+author: Jane Doe
+---
+
+import { Callout } from '@/components/Callout'
+import { InteractiveChart } from '@/components/InteractiveChart'
+
+# {frontmatter.title}
+
+React Server Components (RSC) represent a paradigm shift in how we build React applications. By rendering components on the server, we can reduce the client-side JavaScript bundle size and improve load times.
+
+<Callout type="info" title="Note">
+  Server Components are not the same as Server-Side Rendering (SSR). They are a complementary technology that works *with* SSR.
+</Callout>
+
+## The Problem with Client-Side Data Fetching
+
+Traditionally, we'd fetch data in a `useEffect` hook:
+
+```jsx
+function Profile() {
+  const [data, setData] = useState(null);
+  useEffect(() => {
+    fetch('/api/user').then(res => res.json()).then(setData);
+  }, []);
+  
+  if (!data) return <Spinner />;
+  return <div>{data.name}</div>;
+}
+```
+
+<InteractiveChart data={[10, 25, 45, 60, 90]} color="#3b82f6" />
+
+With RSC, we can do this directly:
+
+```tsx
+export default async function Profile() {
+  const data = await db.user.findFirst();
+  return <div>{data.name}</div>;
+}
+```
