@@ -3,12 +3,81 @@ const vscode = require('vscode');
 function activate(context) {
     let bracketsColored = false;
     
-    // Define HTML bracket scopes more comprehensively
+    // Define angle bracket scopes across all supported languages.
+    // VS Code textMateRules accepts scope as an array — a single rule covers everything.
+    // TextMate prefix matching means 'punctuation.definition.tag' also matches
+    // 'punctuation.definition.tag.begin.html', '.end.jsx', '.begin.svelte', etc.
     const bracketScopes = [
+        // Broad catch-all (covers current + future grammars via prefix matching)
+        'punctuation.definition.tag',
+        'punctuation.definition.tag.begin',
+        'punctuation.definition.tag.end',
+
+        // HTML
         'punctuation.definition.tag.html',
         'punctuation.definition.tag.begin.html',
-        'punctuation.definition.tag.end.html'
+        'punctuation.definition.tag.end.html',
+
+        // JSX (JavaScript)
+        'punctuation.definition.tag.begin.js',
+        'punctuation.definition.tag.end.js',
+        'punctuation.definition.tag.begin.js.jsx',
+        'punctuation.definition.tag.end.js.jsx',
+
+        // TSX (TypeScript)
+        'punctuation.definition.tag.begin.ts',
+        'punctuation.definition.tag.end.ts',
+        'punctuation.definition.tag.begin.ts.tsx',
+        'punctuation.definition.tag.end.ts.tsx',
+        'punctuation.definition.tag.begin.tsx',
+        'punctuation.definition.tag.end.tsx',
+
+        // Vue
+        'punctuation.definition.tag.begin.html.vue',
+        'punctuation.definition.tag.end.html.vue',
+
+        // Svelte
+        'punctuation.definition.tag.begin.svelte',
+        'punctuation.definition.tag.end.svelte',
+
+        // Astro
+        'punctuation.definition.tag.begin.astro',
+        'punctuation.definition.tag.end.astro',
+
+        // ERB (Ruby on Rails)
+        'punctuation.definition.tag.begin.html.erb',
+        'punctuation.definition.tag.end.html.erb',
+
+        // MDX
+        'punctuation.definition.tag.begin.mdx',
+        'punctuation.definition.tag.end.mdx',
+
+        // Liquid (Shopify)
+        'punctuation.definition.tag.begin.html.liquid',
+        'punctuation.definition.tag.end.html.liquid',
+
+        // PHP / Blade
+        'punctuation.definition.tag.begin.html.php',
+        'punctuation.definition.tag.end.html.php',
+
+        // Handlebars
+        'punctuation.definition.tag.begin.html.handlebars',
+        'punctuation.definition.tag.end.html.handlebars',
+
+        // XML
+        'punctuation.definition.tag.xml',
+        'punctuation.definition.tag.begin.xml',
+        'punctuation.definition.tag.end.xml',
     ];
+
+    // Helper: check if a rule was created by this extension
+    function isOurRule(rule) {
+        const scope = rule.scope;
+        if (Array.isArray(scope)) {
+            return scope.some(s => bracketScopes.includes(s));
+        }
+        return bracketScopes.includes(scope);
+    }
 
     let toggleBrackets = vscode.commands.registerCommand('extension.toggleBrackets', async () => {
         try {
@@ -27,25 +96,24 @@ function activate(context) {
                 globalColorCustomizations['textMateRules'] = [];
             }
 
-            // Apply our changes to the global textMateRules
+            // Remove any existing rules from this extension (handles both string and array scopes)
             globalColorCustomizations['textMateRules'] = globalColorCustomizations['textMateRules'].filter(rule =>
-                !bracketScopes.includes(rule.scope)
+                !isOurRule(rule)
             );
 
             if (!bracketsColored) {
-                bracketScopes.forEach(scope => {
-                    globalColorCustomizations['textMateRules'].push({
-                        scope: scope,
-                        settings: {
-                            foreground: editorBackground
-                        }
-                    });
+                // Add a single rule with all scopes as an array
+                globalColorCustomizations['textMateRules'].push({
+                    scope: bracketScopes,
+                    settings: {
+                        foreground: editorBackground
+                    }
                 });
                 bracketsColored = true;
-                vscode.window.setStatusBarMessage('HTML angle brackets: hidden (Global)', 2000);
+                vscode.window.setStatusBarMessage('Angle brackets: hidden (Global)', 2000);
             } else {
                 bracketsColored = false;
-                vscode.window.setStatusBarMessage('HTML angle brackets: visible (Global)', 2000);
+                vscode.window.setStatusBarMessage('Angle brackets: visible (Global)', 2000);
             }
 
             await config.update(
@@ -55,7 +123,7 @@ function activate(context) {
             );
         } catch (error) {
             console.error('Error toggling brackets:', error);
-            vscode.window.showErrorMessage('Failed to toggle HTML brackets visibility');
+            vscode.window.showErrorMessage('Failed to toggle angle brackets visibility');
         }
     });
 
