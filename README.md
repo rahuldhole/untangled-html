@@ -1,3 +1,6 @@
+<meta name="description" content="Untangled HTML: Declutter Your Code. A VS Code extension to hide angle brackets in HTML, Vue, JSX, Svelte, ERB, and more for Zen Mode reading.">
+<meta name="keywords" content="VS Code, HTML, Vue, JSX, TSX, Svelte, Astro, ERB, PHP, Handlebars, MDX, Liquid, Blade, XML, extension, declutter, untangled">
+
 # Untangled HTML: Declutter Your Code
 
 <div align="center">
@@ -40,7 +43,7 @@ HTML can be verbose. Between `<div>`, `<span>`, and nested components in Vue/JSX
 
 - **⚡ Instant Toggle**: Switch between views instantly with a command or keybinding.
 - **🎨 Theme Aware**: Automatically adjusts its color to match your VS Code theme, making hidden brackets invisible but accessible.
-- **📦 Multi-Language Support**: Works seamlessly with `.html`, `.vue`, `.jsx`, and `.tsx`.
+- **📦 Massive Language Support**: Works seamlessly with `.html`, `.vue`, `.jsx`, `.tsx`, `.svelte`, `.astro`, `.erb` (Ruby on Rails), `.mdx`, `.liquid` (Shopify), `.php` (Blade), `.handlebars`, and `.xml`.
 - **📊 Status Bar Integration**: See the current state (Hidden/Visible) at a glance in your bottom bar.
 - **🧠 Zero Configuration**: Works out of the box. No complex settings required.
 
