@@ -1,4 +1,5 @@
 const vscode = require('vscode');
+const { getParserForDocument, FALLBACK_EXTENSIONS } = require('./parsers');
 
 function activate(context) {
     let isHidden = false;
@@ -89,72 +90,6 @@ function activate(context) {
         return bracketScopes.includes(scope);
     }
 
-    /**
-     * Find angle bracket ranges in a document using regex.
-     * Matches complete HTML/XML-like tags and extracts just the bracket characters.
-     * Handles quoted attribute values and nested curly braces so that > inside them isn't misdetected.
-     */
-    function findTagBracketRanges(document) {
-        const text = document.getText();
-        // Skip very large files for performance
-        if (text.length > 500000) return [];
-
-        const ranges = [];
-        let match;
-
-        // Match complete HTML/XML-like tags:
-        //   <tag ...>   </tag>   <tag ... />   <!-- ... -->   <!DOCTYPE ...>
-        // The character class handles:
-        //   [^>"'{}]  — any char except >, ", ', {, } (stops at tag close)
-        //   "[^"]*"   — double-quoted strings (allows > inside quotes)
-        //   '[^']*'   — single-quoted strings (allows > inside quotes)
-        //   \{[^{}]*(?:\{[^{}]*\}[^{}]*)*\} — expression blocks (allows one level of nested curly braces like style={{color:'red'}})
-        const TAG_REGEX = /<\/?\s*[a-zA-Z][\w\-.:]*(?:\s(?:[^>"'{}]|"[^"]*"|'[^']*'|\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})*)?\s*\/?>/g;
-        const COMMENT_REGEX = /<!--[\s\S]*?-->/g;
-
-        // Process tags
-        while ((match = TAG_REGEX.exec(text)) !== null) {
-            const tagStr = match[0];
-            const startIdx = match.index;
-
-            // Opening bracket: < or </
-            const openLen = tagStr.startsWith('</') ? 2 : 1;
-            ranges.push(new vscode.Range(
-                document.positionAt(startIdx),
-                document.positionAt(startIdx + openLen)
-            ));
-
-            // Closing bracket: > or />
-            const closeLen = tagStr.endsWith('/>') ? 2 : 1;
-            ranges.push(new vscode.Range(
-                document.positionAt(startIdx + tagStr.length - closeLen),
-                document.positionAt(startIdx + tagStr.length)
-            ));
-        }
-
-        // Process HTML comments: hide <!-- and -->
-        while ((match = COMMENT_REGEX.exec(text)) !== null) {
-            const startIdx = match.index;
-            const endIdx = startIdx + match[0].length;
-
-            // Hide <!--
-            ranges.push(new vscode.Range(
-                document.positionAt(startIdx),
-                document.positionAt(startIdx + 4)
-            ));
-            // Hide -->
-            ranges.push(new vscode.Range(
-                document.positionAt(endIdx - 3),
-                document.positionAt(endIdx)
-            ));
-        }
-
-        return ranges;
-    }
-
-    const FALLBACK_EXTENSIONS = new Set([
-        '.erb', '.blade'
-    ]);
 
     /** Returns true if the editor's language or file extension needs the decoration fallback */
     function needsDecorationFallback(editor) {
@@ -187,7 +122,8 @@ function activate(context) {
         if (!isHidden || !decorationType) return;
         for (const editor of vscode.window.visibleTextEditors) {
             if (needsDecorationFallback(editor)) {
-                const ranges = findTagBracketRanges(editor.document);
+                const parseFn = getParserForDocument(editor.document);
+                const ranges = parseFn(editor.document);
                 editor.setDecorations(decorationType, ranges);
             } else {
                 // Clear decorations for grammar-supported editors (textMateRules handle them)
