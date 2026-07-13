@@ -4,6 +4,12 @@ All notable changes to the "html-no-brackets" extension will be documented in th
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.4] - 2026-07-13
+
+### Added
+- **Default Extension State**: Added persistence for bracket visibility state, ensuring it initializes and restores on startup.
+- **Parser**: Added support for JSX, TSX, MDX, ERB, Astro, Svelte, PHP, Handlebars, Liquid.
+
 ## [0.0.3] - 2026-04-12
 
 ### Added
