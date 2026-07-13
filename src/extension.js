@@ -1,14 +1,16 @@
 const vscode = require('vscode');
 
 function activate(context) {
-    let bracketsColored = false;
-    
-    // Define angle bracket scopes across all supported languages.
-    // VS Code textMateRules accepts scope as an array — a single rule covers everything.
-    // TextMate prefix matching means 'punctuation.definition.tag' also matches
-    // 'punctuation.definition.tag.begin.html', '.end.jsx', '.begin.svelte', etc.
+    let isHidden = false;
+    let decorationType = null;
+    let debounceTimer = null;
+
+    // ─── TextMate Scopes ──────────────────────────────────────────────
+    // Used for languages with proper grammar support (HTML, JSX, TSX, etc.)
+    // TextMate prefix matching means 'punctuation.definition.tag' also
+    // matches '.begin.html', '.end.jsx', '.begin.svelte', etc.
     const bracketScopes = [
-        // Broad catch-all (covers current + future grammars via prefix matching)
+        // Broad catch-all
         'punctuation.definition.tag',
         'punctuation.definition.tag.begin',
         'punctuation.definition.tag.end',
@@ -70,7 +72,16 @@ function activate(context) {
         'punctuation.definition.tag.end.xml',
     ];
 
-    // Helper: check if a rule was created by this extension
+    // Languages where TextMate scopes reliably handle bracket hiding
+    // (these have proper grammar support built-in or via popular extensions)
+    const GRAMMAR_LANGUAGES = new Set([
+        'html', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact',
+        'vue', 'vue-html', 'php', 'blade', 'handlebars', 'xml', 'xsl', 'svg',
+        'svelte', 'astro', 'mdx', 'erb', 'liquid', 'twig', 'edge',
+    ]);
+
+    // ─── Helpers ──────────────────────────────────────────────────────
+
     function isOurRule(rule) {
         const scope = rule.scope;
         if (Array.isArray(scope)) {
@@ -79,55 +90,180 @@ function activate(context) {
         return bracketScopes.includes(scope);
     }
 
-    let toggleBrackets = vscode.commands.registerCommand('extension.toggleBrackets', async () => {
+    /**
+     * Find angle bracket ranges in a document using regex.
+     * Matches complete HTML/XML-like tags and extracts just the bracket characters.
+     * Handles quoted attribute values so that > inside quotes isn't misdetected.
+     */
+    function findTagBracketRanges(document) {
+        const text = document.getText();
+        // Skip very large files for performance
+        if (text.length > 500000) return [];
+
+        const ranges = [];
+        let match;
+
+        // Match complete HTML/XML-like tags:
+        //   <tag ...>   </tag>   <tag ... />   <!-- ... -->   <!DOCTYPE ...>
+        // The character class handles:
+        //   [^>"'{}]  — any char except >, ", ', {, } (stops at tag close)
+        //   "[^"]*"   — double-quoted strings (allows > inside quotes)
+        //   '[^']*'   — single-quoted strings (allows > inside quotes)
+        //   \{[^}]*\} — expression blocks like JSX {expressions} (allows > inside)
+        const TAG_REGEX = /<\/?\s*[a-zA-Z][\w\-.:]*(?:\s(?:[^>"'{}]|"[^"]*"|'[^']*'|\{[^}]*\})*)?\s*\/?>/g;
+        const COMMENT_REGEX = /<!--[\s\S]*?-->/g;
+
+        // Process tags
+        while ((match = TAG_REGEX.exec(text)) !== null) {
+            const tagStr = match[0];
+            const startIdx = match.index;
+
+            // Opening bracket: < or </
+            const openLen = tagStr.startsWith('</') ? 2 : 1;
+            ranges.push(new vscode.Range(
+                document.positionAt(startIdx),
+                document.positionAt(startIdx + openLen)
+            ));
+
+            // Closing bracket: > or />
+            const closeLen = tagStr.endsWith('/>') ? 2 : 1;
+            ranges.push(new vscode.Range(
+                document.positionAt(startIdx + tagStr.length - closeLen),
+                document.positionAt(startIdx + tagStr.length)
+            ));
+        }
+
+        // Process HTML comments: hide <!-- and -->
+        while ((match = COMMENT_REGEX.exec(text)) !== null) {
+            const startIdx = match.index;
+            const endIdx = startIdx + match[0].length;
+
+            // Hide <!--
+            ranges.push(new vscode.Range(
+                document.positionAt(startIdx),
+                document.positionAt(startIdx + 4)
+            ));
+            // Hide -->
+            ranges.push(new vscode.Range(
+                document.positionAt(endIdx - 3),
+                document.positionAt(endIdx)
+            ));
+        }
+
+        return ranges;
+    }
+
+    /** Returns true if the editor's language lacks grammar support */
+    function needsDecorationFallback(editor) {
+        return !GRAMMAR_LANGUAGES.has(editor.document.languageId);
+    }
+
+    /** Apply regex-based decorations to editors that need them */
+    function applyDecorations() {
+        if (!isHidden || !decorationType) return;
+        for (const editor of vscode.window.visibleTextEditors) {
+            if (needsDecorationFallback(editor)) {
+                const ranges = findTagBracketRanges(editor.document);
+                editor.setDecorations(decorationType, ranges);
+            } else {
+                // Clear decorations for grammar-supported editors (textMateRules handle them)
+                editor.setDecorations(decorationType, []);
+            }
+        }
+    }
+
+    /** Debounced version for text change events */
+    function debouncedApplyDecorations() {
+        if (debounceTimer) clearTimeout(debounceTimer);
+        debounceTimer = setTimeout(() => applyDecorations(), 300);
+    }
+
+    // ─── TextMate Rules Management ────────────────────────────────────
+
+    async function updateTextMateRules(hide, editorBackground) {
+        const config = vscode.workspace.getConfiguration();
+        const inspection = config.inspect('editor.tokenColorCustomizations');
+        const globalColorCustomizations = inspection.globalValue || {};
+
+        if (!globalColorCustomizations['textMateRules']) {
+            globalColorCustomizations['textMateRules'] = [];
+        }
+
+        // Remove existing rules from this extension
+        globalColorCustomizations['textMateRules'] = globalColorCustomizations['textMateRules'].filter(
+            rule => !isOurRule(rule)
+        );
+
+        if (hide) {
+            // Add a single rule with all scopes as an array
+            globalColorCustomizations['textMateRules'].push({
+                scope: bracketScopes,
+                settings: { foreground: editorBackground }
+            });
+        }
+
+        await config.update(
+            'editor.tokenColorCustomizations',
+            globalColorCustomizations,
+            vscode.ConfigurationTarget.Global
+        );
+    }
+
+    // ─── Toggle Command ───────────────────────────────────────────────
+
+    const toggleBrackets = vscode.commands.registerCommand('extension.toggleBrackets', async () => {
         try {
-            // Get current theme colors
-            const config = vscode.workspace.getConfiguration();
             const editorConfig = vscode.workspace.getConfiguration('editor');
             const editorBackground = editorConfig.get('background') || '#00000000';
 
-            // Update configuration at global (User) level instead of workspace
-            // This prevents adding .vscode/settings.json to the repository and git diffs
-            const inspection = config.inspect('editor.tokenColorCustomizations');
-            const globalColorCustomizations = inspection.globalValue || {};
-            
-            // Initialize textMateRules in global config if doesn't exist
-            if (!globalColorCustomizations['textMateRules']) {
-                globalColorCustomizations['textMateRules'] = [];
-            }
+            if (!isHidden) {
+                // 1. Apply textMateRules for grammar-supported languages
+                await updateTextMateRules(true, editorBackground);
 
-            // Remove any existing rules from this extension (handles both string and array scopes)
-            globalColorCustomizations['textMateRules'] = globalColorCustomizations['textMateRules'].filter(rule =>
-                !isOurRule(rule)
-            );
-
-            if (!bracketsColored) {
-                // Add a single rule with all scopes as an array
-                globalColorCustomizations['textMateRules'].push({
-                    scope: bracketScopes,
-                    settings: {
-                        foreground: editorBackground
-                    }
+                // 2. Create decoration type and apply for unsupported languages
+                decorationType = vscode.window.createTextEditorDecorationType({
+                    opacity: '0'
                 });
-                bracketsColored = true;
+                isHidden = true;
+                applyDecorations();
+
                 vscode.window.setStatusBarMessage('Angle brackets: hidden (Global)', 2000);
             } else {
-                bracketsColored = false;
+                // 1. Remove textMateRules
+                await updateTextMateRules(false);
+
+                // 2. Clear decorations
+                if (decorationType) {
+                    decorationType.dispose();
+                    decorationType = null;
+                }
+
+                isHidden = false;
                 vscode.window.setStatusBarMessage('Angle brackets: visible (Global)', 2000);
             }
-
-            await config.update(
-                'editor.tokenColorCustomizations',
-                globalColorCustomizations,
-                vscode.ConfigurationTarget.Global
-            );
         } catch (error) {
             console.error('Error toggling brackets:', error);
             vscode.window.showErrorMessage('Failed to toggle angle brackets visibility');
         }
     });
 
-    context.subscriptions.push(toggleBrackets);
+    // ─── Event Listeners ──────────────────────────────────────────────
+    // Re-apply decorations when editors change or text is modified
+
+    context.subscriptions.push(
+        toggleBrackets,
+        vscode.window.onDidChangeActiveTextEditor(() => applyDecorations()),
+        vscode.window.onDidChangeVisibleTextEditors(() => applyDecorations()),
+        vscode.workspace.onDidChangeTextDocument((e) => {
+            if (!isHidden || !decorationType) return;
+            const editor = vscode.window.visibleTextEditors.find(
+                ed => ed.document === e.document
+            );
+            if (editor && needsDecorationFallback(editor)) {
+                debouncedApplyDecorations();
+            }
+        })
+    );
 }
 
 function deactivate() {}
