@@ -76,8 +76,7 @@ function activate(context) {
     // (these have proper grammar support built-in or via popular extensions)
     const GRAMMAR_LANGUAGES = new Set([
         'html', 'javascript', 'javascriptreact', 'typescript', 'typescriptreact',
-        'vue', 'vue-html', 'php', 'blade', 'handlebars', 'xml', 'xsl', 'svg',
-        'svelte', 'astro', 'mdx', 'erb', 'liquid', 'twig', 'edge',
+        'php', 'handlebars', 'xml', 'xsl', 'svg',
     ]);
 
     // ─── Helpers ──────────────────────────────────────────────────────
@@ -93,7 +92,7 @@ function activate(context) {
     /**
      * Find angle bracket ranges in a document using regex.
      * Matches complete HTML/XML-like tags and extracts just the bracket characters.
-     * Handles quoted attribute values so that > inside quotes isn't misdetected.
+     * Handles quoted attribute values and nested curly braces so that > inside them isn't misdetected.
      */
     function findTagBracketRanges(document) {
         const text = document.getText();
@@ -109,8 +108,8 @@ function activate(context) {
         //   [^>"'{}]  — any char except >, ", ', {, } (stops at tag close)
         //   "[^"]*"   — double-quoted strings (allows > inside quotes)
         //   '[^']*'   — single-quoted strings (allows > inside quotes)
-        //   \{[^}]*\} — expression blocks like JSX {expressions} (allows > inside)
-        const TAG_REGEX = /<\/?\s*[a-zA-Z][\w\-.:]*(?:\s(?:[^>"'{}]|"[^"]*"|'[^']*'|\{[^}]*\})*)?\s*\/?>/g;
+        //   \{[^{}]*(?:\{[^{}]*\}[^{}]*)*\} — expression blocks (allows one level of nested curly braces like style={{color:'red'}})
+        const TAG_REGEX = /<\/?\s*[a-zA-Z][\w\-.:]*(?:\s(?:[^>"'{}]|"[^"]*"|'[^']*'|\{[^{}]*(?:\{[^{}]*\}[^{}]*)*\})*)?\s*\/?>/g;
         const COMMENT_REGEX = /<!--[\s\S]*?-->/g;
 
         // Process tags
