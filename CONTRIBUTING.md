@@ -94,6 +94,18 @@ pnpx vsce login RahulDhole
 pnpm run publish
 ```
 
+#### Manual Web Extension Publishing
+To ensure the `compile-web` build is effective and the web extension works, you can manually generate and upload the extension:
+1.  **Compile for Web**:
+    ```bash
+    pnpm run compile-web
+    ```
+2.  **Package**:
+    ```bash
+    pnpm run package
+    ```
+3.  **Upload**: Go to the [VS Code Publisher Management page](https://marketplace.visualstudio.com/manage) and manually upload the generated `.vsix` file.
+
 ### 3. Open VSX Registry
 To support users on VSCodium and other forks, we also publish to [Open VSX](https://open-vsx.org/).
 ```bash
