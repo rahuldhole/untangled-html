@@ -10,9 +10,9 @@
     "lint": "eslint .",
     "compile-web": "esbuild src/extension.js --bundle --outfile=dist/web/extension.js --external:vscode --format=cjs --platform=browser",
     "vscode:prepublish": "pnpm run compile-web",
-    "package": "pnpx vsce package",
-    "publish": "pnpx vsce publish",
-    "publish:open-vsx": "pnpx ovsx publish"
+    "package": "pnpx vsce package --no-dependencies",
+    "publish": "pnpx vsce publish --no-dependencies",
+    "publish:open-vsx": "pnpx ovsx publish --no-dependencies"
   },
   "license": "MIT",
   "repository": {
