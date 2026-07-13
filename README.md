@@ -1,3 +1,15 @@
+<meta name="description" content="Untangled HTML: Declutter Your Code. A VS Code extension to hide angle brackets in HTML, Vue, JSX, Svelte, ERB, and more for Zen Mode reading.">
+<meta name="keywords" content="VS Code, HTML, Vue, JSX, TSX, Svelte, Astro, ERB, PHP, Handlebars, MDX, Liquid, Blade, XML, extension, declutter, untangled">
+<meta property="og:title" content="Untangled HTML: Declutter Your Code">
+<meta property="og:description" content="A VS Code extension to hide angle brackets in HTML, Vue, JSX, Svelte, ERB, and more for Zen Mode reading.">
+<meta property="og:image" content="https://raw.githubusercontent.com/rahuldhole/untangled-html/main/assets/hero-banner.png">
+<meta property="og:url" content="https://marketplace.visualstudio.com/items?itemName=RahulDhole.untangled-html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Untangled HTML: Declutter Your Code">
+<meta name="twitter:description" content="A VS Code extension to hide angle brackets in HTML, Vue, JSX, Svelte, ERB, and more for Zen Mode reading.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/rahuldhole/untangled-html/main/assets/hero-banner.png">
+
 # Untangled HTML: Declutter Your Code
 
 <div align="center">
@@ -9,15 +21,9 @@
 </p>
 
 <p align="center">
-  <a href="https://marketplace.visualstudio.com/items?itemName=RahulDhole.untangled-html">
-    <img src="https://img.shields.io/badge/VS%20Code-Install%20Now-007ACC?style=for-the-badge&logo=visual-studio-code&logoColor=white" alt="Install Untangled HTML">
-  </a>
-</p>
-
-<p align="center">
-  <img src="https://img.shields.io/visual-studio-marketplace/v/RahulDhole.untangled-html?label=Version&color=blue" alt="Version">
-  <img src="https://img.shields.io/visual-studio-marketplace/i/RahulDhole.untangled-html?label=Installs&color=brightgreen" alt="Installs">
-  <img src="https://img.shields.io/github/stars/rahuldhole/untangled-html?style=social" alt="Stars">
+  <a href="https://marketplace.visualstudio.com/items?itemName=RahulDhole.untangled-html"><img src="https://badgen.net/vs-marketplace/v/RahulDhole.untangled-html?color=007acc&label=Marketplace&icon=visualstudio" alt="Visual Studio Marketplace"></a>
+  <a href="https://open-vsx.org/extension/RahulDhole/untangled-html"><img src="https://badgen.net/open-vsx/v/RahulDhole/untangled-html?color=33b3b3&label=Open%20VSX&icon=visualstudio" alt="Open VSX Registry"></a>
+  <a href="LICENSE"><img src="https://badgen.net/badge/license/MIT/yellow" alt="License: MIT"></a>
 </p>
 
 ---
@@ -40,7 +46,7 @@ HTML can be verbose. Between `<div>`, `<span>`, and nested components in Vue/JSX
 
 - **⚡ Instant Toggle**: Switch between views instantly with a command or keybinding.
 - **🎨 Theme Aware**: Automatically adjusts its color to match your VS Code theme, making hidden brackets invisible but accessible.
-- **📦 Multi-Language Support**: Works seamlessly with `.html`, `.vue`, `.jsx`, and `.tsx`.
+- **📦 Massive Language Support**: Works seamlessly with `.html`, `.vue`, `.jsx`, `.tsx`, `.svelte`, `.astro`, `.erb` (Ruby on Rails), `.mdx`, `.liquid` (Shopify), `.php` (Blade), `.handlebars`, and `.xml`.
 - **📊 Status Bar Integration**: See the current state (Hidden/Visible) at a glance in your bottom bar.
 - **🧠 Zero Configuration**: Works out of the box. No complex settings required.
 

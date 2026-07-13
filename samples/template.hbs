@@ -1,0 +1,36 @@
+<div class="entry">
+  <h1>{{title}}</h1>
+  
+  <div class="body">
+    {{#if author}}
+      <p>Written by <a href="/authors/{{author.id}}">{{author.name}}</a></p>
+    {{else}}
+      <p>Unknown Author</p>
+    {{/if}}
+
+    <div class="content">
+      {{{body}}}
+    </div>
+
+    {{#unless isPublished}}
+      <div class="draft-warning">
+        <strong>Warning:</strong> This article is still a draft and has not been published yet.
+      </div>
+    {{/unless}}
+
+    <ul class="tags">
+      {{#each tags}}
+        <li class="tag-{{this.category}}">
+          <a href="/tags/{{this.slug}}">{{this.name}}</a>
+          {{#if @last}}
+            <span class="icon-star"></span>
+          {{/if}}
+        </li>
+      {{else}}
+        <li>No tags provided</li>
+      {{/each}}
+    </ul>
+
+    {{> shareButtons url=permalink }}
+  </div>
+</div>

@@ -1,0 +1,64 @@
+<main class="main-container" [@routeAnimations]="prepareRoute(outlet)">
+  <nav class="navbar" role="navigation" aria-label="main navigation">
+    <div class="navbar-brand">
+      <a class="navbar-item" routerLink="/">
+        <img src="assets/logo.svg" alt="App Logo" width="112" height="28">
+      </a>
+      
+      <button 
+        class="navbar-burger" 
+        [class.is-active]="isMenuOpen" 
+        (click)="toggleMenu()"
+        aria-label="menu" 
+        aria-expanded="false"
+      >
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+        <span aria-hidden="true"></span>
+      </button>
+    </div>
+
+    <div class="navbar-menu" [class.is-active]="isMenuOpen">
+      <div class="navbar-start">
+        <a class="navbar-item" routerLink="/dashboard" routerLinkActive="is-active">
+          Dashboard
+        </a>
+        <a class="navbar-item" routerLink="/settings" routerLinkActive="is-active">
+          Settings
+        </a>
+      </div>
+
+      <div class="navbar-end">
+        <div class="navbar-item has-dropdown is-hoverable" *ngIf="user$ | async as user; else loginButton">
+          <a class="navbar-link">
+            <figure class="image is-24x24 mr-2">
+              <img class="is-rounded" [src]="user.avatarUrl" alt="User avatar">
+            </figure>
+            {{ user.name }}
+          </a>
+          <div class="navbar-dropdown is-right">
+            <a class="navbar-item" (click)="openProfile()">Profile</a>
+            <hr class="navbar-divider">
+            <a class="navbar-item has-text-danger" (click)="logout()">Sign Out</a>
+          </div>
+        </div>
+
+        <ng-template #loginButton>
+          <div class="navbar-item">
+            <div class="buttons">
+              <button class="button is-primary" (click)="login()">
+                <strong>Log in</strong>
+              </button>
+            </div>
+          </div>
+        </ng-template>
+      </div>
+    </div>
+  </nav>
+
+  <div class="content-wrapper">
+    <router-outlet #outlet="outlet"></router-outlet>
+  </div>
+  
+  <app-toast-container></app-toast-container>
+</main>
