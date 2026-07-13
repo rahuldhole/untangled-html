@@ -1,4 +1,28 @@
 <div class="container">
   <h1><%= @post.title %></h1>
   <p><%= @post.body %></p>
+  
+  <div class="sidebar">
+    <h2>Related Posts</h2>
+    <ul>
+      <% @related_posts.each do |post| %>
+        <li><%= link_to post.title, post %></li>
+      <% end %>
+    </ul>
+  </div>
+  
+  <style>
+    .container {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 20px;
+    }
+    
+    .sidebar {
+      background: #f8f9fa;
+      padding: 15px;
+      border-radius: 8px;
+      margin-top: 20px;
+    }
+  </style>
 </div>
