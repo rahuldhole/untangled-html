@@ -18,6 +18,10 @@ function findHTMLBracketRanges(document) {
     const ranges = [];
     let match;
 
+    // Reset lastIndex — module-scope /g regexes retain state between calls
+    TAG_REGEX.lastIndex = 0;
+    COMMENT_REGEX.lastIndex = 0;
+
     // Process tags
     while ((match = TAG_REGEX.exec(text)) !== null) {
         const tagStr = match[0];

@@ -13,6 +13,9 @@ function findERBBracketRanges(document) {
 
     let match;
 
+    // Reset lastIndex — module-scope /g regexes retain state between calls
+    ERB_REGEX.lastIndex = 0;
+
     // Process ERB tags
     while ((match = ERB_REGEX.exec(text)) !== null) {
         const tagStr = match[0];
