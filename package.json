@@ -1,46 +1,52 @@
 {
-	"name": "untangled-html",
-	"displayName": "Untangled HTML",
-	"description": "Declutter your HTML, Vue, and JSX. Toggle the visibility of angle brackets for a cleaner, Zen-like coding experience.",
-	"version": "0.0.3",
-	"publisher": "RahulDhole",
-	"private": false,
-	"scripts": {
-		"dev": "pnpm install && echo 'Development environment ready. Press F5 in VS Code to start debugging.'",
-		"lint": "eslint .",
-		"package": "pnpx vsce package",
-		"publish": "pnpx vsce publish",
-		"publish:ovsx": "pnpx ovsx publish"
-	},
-	"license": "MIT",
-	"repository": {
-		"type": "git",
-		"url": "https://github.com/rahuldhole/untangled-html"
-	},
-	"icon": "logo.png",
-	"engines": {
-		"vscode": "^1.74.0"
-	},
-	"categories": [
-		"Programming Languages",
-		"Formatters",
-		"Other"
-	],
-	"compilerOptions": {
-		"module": "ESNext",
-		"moduleResolution": "node",
-		"target": "ES6",
-		"esModuleInterop": true,
-		"skipLibCheck": true
-	},
-	"activationEvents": [],
-	"main": "./src/extension.js",
-	"contributes": {
-		"commands": [
-			{
-				"command": "extension.toggleBrackets",
-				"title": "Untangled HTML: Toggle Angle Brackets Visibility"
-			}
-		]
-	}
+  "name": "untangled-html",
+  "displayName": "Untangled HTML",
+  "description": "Declutter your HTML, Vue, and JSX. Toggle the visibility of angle brackets for a cleaner, Zen-like coding experience.",
+  "version": "0.0.3",
+  "publisher": "RahulDhole",
+  "private": false,
+  "scripts": {
+    "dev": "pnpm install && echo 'Development environment ready. Press F5 in VS Code to start debugging.'",
+    "lint": "eslint .",
+    "compile-web": "esbuild src/extension.js --bundle --outfile=dist/web/extension.js --external:vscode --format=cjs --platform=browser",
+    "vscode:prepublish": "pnpm run compile-web",
+    "package": "pnpx vsce package",
+    "publish": "pnpx vsce publish",
+    "publish:open-vsx": "pnpx ovsx publish"
+  },
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/rahuldhole/untangled-html"
+  },
+  "icon": "logo.png",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Programming Languages",
+    "Formatters",
+    "Other"
+  ],
+  "compilerOptions": {
+    "module": "ESNext",
+    "moduleResolution": "node",
+    "target": "ES6",
+    "esModuleInterop": true,
+    "skipLibCheck": true
+  },
+  "activationEvents": [],
+  "main": "./src/extension.js",
+  "browser": "./dist/web/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "extension.toggleBrackets",
+        "title": "Untangled HTML: Toggle Angle Brackets Visibility"
+      }
+    ]
+  },
+  "devDependencies": {
+    "esbuild": "^0.28.1"
+  }
 }
