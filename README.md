@@ -1,5 +1,14 @@
 <meta name="description" content="Untangled HTML: Declutter Your Code. A VS Code extension to hide angle brackets in HTML, Vue, JSX, Svelte, ERB, and more for Zen Mode reading.">
 <meta name="keywords" content="VS Code, HTML, Vue, JSX, TSX, Svelte, Astro, ERB, PHP, Handlebars, MDX, Liquid, Blade, XML, extension, declutter, untangled">
+<meta property="og:title" content="Untangled HTML: Declutter Your Code">
+<meta property="og:description" content="A VS Code extension to hide angle brackets in HTML, Vue, JSX, Svelte, ERB, and more for Zen Mode reading.">
+<meta property="og:image" content="https://raw.githubusercontent.com/rahuldhole/untangled-html/main/assets/hero-banner.png">
+<meta property="og:url" content="https://marketplace.visualstudio.com/items?itemName=RahulDhole.untangled-html">
+<meta property="og:type" content="website">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Untangled HTML: Declutter Your Code">
+<meta name="twitter:description" content="A VS Code extension to hide angle brackets in HTML, Vue, JSX, Svelte, ERB, and more for Zen Mode reading.">
+<meta name="twitter:image" content="https://raw.githubusercontent.com/rahuldhole/untangled-html/main/assets/hero-banner.png">
 
 # Untangled HTML: Declutter Your Code
 
