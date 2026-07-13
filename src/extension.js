@@ -2,7 +2,7 @@ const vscode = require('vscode');
 const { getParserForDocument, FALLBACK_EXTENSIONS } = require('./parsers');
 
 function activate(context) {
-    let isHidden = false;
+    let isHidden = context.globalState.get('untangledHtml.isHidden', true);
     let decorationType = null;
     let debounceTimer = null;
 
@@ -143,69 +143,68 @@ function activate(context) {
     async function updateTextMateRules(hide, editorBackground) {
         const config = vscode.workspace.getConfiguration();
         const inspection = config.inspect('editor.tokenColorCustomizations');
-        const globalColorCustomizations = inspection.globalValue || {};
+        const globalColorCustomizations = inspection.globalValue ? JSON.parse(JSON.stringify(inspection.globalValue)) : {};
 
-        if (!globalColorCustomizations['textMateRules']) {
-            globalColorCustomizations['textMateRules'] = [];
-        }
-
-        // Remove existing rules from this extension
-        globalColorCustomizations['textMateRules'] = globalColorCustomizations['textMateRules'].filter(
-            rule => !isOurRule(rule)
-        );
+        let currentRules = globalColorCustomizations['textMateRules'] || [];
+        let newRules = currentRules.filter(rule => !isOurRule(rule));
 
         if (hide) {
-            // Add a single rule with all scopes as an array
-            globalColorCustomizations['textMateRules'].push({
+            newRules.push({
                 scope: bracketScopes,
                 settings: { foreground: editorBackground }
             });
         }
 
-        await config.update(
-            'editor.tokenColorCustomizations',
-            globalColorCustomizations,
-            vscode.ConfigurationTarget.Global
-        );
+        if (JSON.stringify(currentRules) !== JSON.stringify(newRules)) {
+            globalColorCustomizations['textMateRules'] = newRules;
+            await config.update(
+                'editor.tokenColorCustomizations',
+                globalColorCustomizations,
+                vscode.ConfigurationTarget.Global
+            );
+        }
     }
 
-    // ─── Toggle Command ───────────────────────────────────────────────
+    // ─── State Management ─────────────────────────────────────────────
 
-    const toggleBrackets = vscode.commands.registerCommand('extension.toggleBrackets', async () => {
+    async function applyCurrentState(showStatus = false) {
         try {
             const editorConfig = vscode.workspace.getConfiguration('editor');
             const editorBackground = editorConfig.get('background') || '#00000000';
 
-            if (!isHidden) {
-                // 1. Apply textMateRules for grammar-supported languages
+            if (isHidden) {
                 await updateTextMateRules(true, editorBackground);
-
-                // 2. Create decoration type and apply for unsupported languages
-                decorationType = vscode.window.createTextEditorDecorationType({
-                    color: 'transparent',
-                    opacity: '0'
-                });
-                isHidden = true;
+                if (!decorationType) {
+                    decorationType = vscode.window.createTextEditorDecorationType({
+                        color: 'transparent',
+                        opacity: '0'
+                    });
+                }
                 applyDecorations();
-
-                vscode.window.setStatusBarMessage('Angle brackets: hidden (Global)', 2000);
+                if (showStatus) vscode.window.setStatusBarMessage('Angle brackets: hidden (Global)', 2000);
             } else {
-                // 1. Remove textMateRules
                 await updateTextMateRules(false);
-
-                // 2. Clear decorations
                 if (decorationType) {
                     decorationType.dispose();
                     decorationType = null;
                 }
-
-                isHidden = false;
-                vscode.window.setStatusBarMessage('Angle brackets: visible (Global)', 2000);
+                if (showStatus) vscode.window.setStatusBarMessage('Angle brackets: visible (Global)', 2000);
             }
+            await context.globalState.update('untangledHtml.isHidden', isHidden);
         } catch (error) {
-            console.error('Error toggling brackets:', error);
-            vscode.window.showErrorMessage('Failed to toggle angle brackets visibility');
+            console.error('Error applying state:', error);
+            if (showStatus) vscode.window.showErrorMessage('Failed to apply angle brackets visibility');
         }
+    }
+
+    // Apply default state on startup
+    applyCurrentState();
+
+    // ─── Toggle Command ───────────────────────────────────────────────
+
+    const toggleBrackets = vscode.commands.registerCommand('extension.toggleBrackets', async () => {
+        isHidden = !isHidden;
+        await applyCurrentState(true);
     });
 
     // ─── Event Listeners ──────────────────────────────────────────────
